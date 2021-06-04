@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import $ from "jquery";
+import $, { hasData } from "jquery";
 import "./App.scss";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -7,18 +7,21 @@ import About from "./components/About";
 import Experience from "./components/Experience";
 import Projects from "./components/Projects";
 import Skills from "./components/Skills";
-import { fetchResumeData, fetchSharedData } from './components/test';
-import firebase from './firebaseConfig'
+import {firestoreConnection} from './firebase';
+import { fetchResumeData, fetchSharedData } from './actions/APIs';
+
 
 class App extends Component {
 
-  constructor(props) {
-    super();
-    this.state = {
+  state = {
       foo: "bar",
       resumeData: {},
       sharedData: {},
+      hasData: false
     };
+
+  componentDidMount() {
+    this.loadSharedData(); 
   }
 
   applyPickedLanguage(pickedLanguage, oppositeLangIconId) {
@@ -44,108 +47,94 @@ class App extends Component {
       .setAttribute("filter", "brightness(40%)");
   }
 
-  componentDidMount() {
-    this.loadSharedData();
-    this.applyPickedLanguage(
-      window.$primaryLanguage,
-      window.$secondaryLanguageIconId
-    );
-  }
-
   loadResumeFromPath = async ()=> {
-    console.log('as')
-    let response = await fetchResumeData()
-    this.setState({ resumeData: response });
-
-    // $.ajax({
-    //   url: path,
-    //   dataType: "json",
-    //   cache: false,
-    //   success: function (data) {
-    //     this.setState({ resumeData: data });
-    //   }.bind(this),
-    //   error: function (xhr, status, err) {
-    //     alert(err);
-    //   },
-    // });
+   
+    let response = await fetchResumeData(firestoreConnection)
+    setTimeout(()=>{
+      this.setState({ resumeData: response });
+    },1000)
   }
 
   loadSharedData = async() =>{
-    // $.ajax({
-    //   url: `portfolio_shared_data.json`,
-    //   dataType: "json",
-    //   cache: false,
-    //   success: function (data) {
-    //     this.setState({ sharedData: data });
-    //     document.title = `${this.state.sharedData.basic_info.name}`;
-    //   }.bind(this),
-    //   error: function (xhr, status, err) {
-    //     alert(err);
-    //   },
-    // });
-    // const itemsRef = firebase.database().ref('json-db-c6a73-default-rtdb');
-    // itemsRef.on('value', (snapshot) => {console.log(snapshot)})
-    let response = await fetchSharedData()
-    this.setState({ sharedData: response });
-    console.log(this.state.sharedData)
+    let response = await fetchSharedData(firestoreConnection)
+    setTimeout(()=>{
+      this.setState({ sharedData: response, 
+                      hasData: true });
+      if(this.state.hasData){
+        this.loadResumeFromPath()
+        this.applyPickedLanguage(
+          window.$primaryLanguage,
+          window.$secondaryLanguageIconId
+        );
+      }
+    },1000)
+    // this.loadResumeFromPath()
   }
 
   render() {
+    let hasData = this.state.hasData
     return (
       <div>
-        <Header sharedData={this.state.sharedData.basic_info} />
-        <div className="col-md-12 mx-auto text-center language">
-          <div
-            onClick={() =>
-              this.applyPickedLanguage(
-                window.$primaryLanguage,
-                window.$secondaryLanguageIconId
-              )
-            }
-            style={{ display: "inline" }}
-          >
-            <span
-              className="iconify language-icon mr-5"
-              data-icon="twemoji-flag-for-flag-united-kingdom"
-              data-inline="false"
-              id={window.$primaryLanguageIconId}
-            ></span>
+      {hasData ? (
+        <div>
+           <Header sharedData={this.state.sharedData['basic_info']} />
+          <div className="col-md-12 mx-auto text-center language">
+            <div
+              onClick={() =>
+                this.applyPickedLanguage(
+                  window.$primaryLanguage,
+                  window.$secondaryLanguageIconId
+                )
+              }
+              style={{ display: "inline" }}
+            >
+              <span
+                className="iconify language-icon mr-5"
+                data-icon="twemoji-flag-for-flag-united-india"
+                data-inline="false"
+                id={window.$primaryLanguageIconId}
+              ></span>
+            </div>
+            <div
+              onClick={() =>
+                this.applyPickedLanguage(
+                  window.$secondaryLanguage,
+                  window.$primaryLanguageIconId
+                )
+              }
+              style={{ display: "inline" }}
+            >
+              <span
+                className="iconify language-icon"
+                data-icon="twemoji-flag-for-flag-india"
+                data-inline="false"
+                id={window.$secondaryLanguageIconId}
+              ></span>
+            </div>
           </div>
-          <div
-            onClick={() =>
-              this.applyPickedLanguage(
-                window.$secondaryLanguage,
-                window.$primaryLanguageIconId
-              )
-            }
-            style={{ display: "inline" }}
-          >
-            <span
-              className="iconify language-icon"
-              data-icon="twemoji-flag-for-flag-poland"
-              data-inline="false"
-              id={window.$secondaryLanguageIconId}
-            ></span>
-          </div>
+          <About
+            resumeBasicInfo={this.state.resumeData.basic_info}
+            sharedBasicInfo={this.state.sharedData.basic_info}
+          />
+          <Projects
+            resumeProjects={this.state.resumeData.projects}
+            resumeBasicInfo={this.state.resumeData.basic_info}
+          />
+          <Skills
+            sharedSkills={this.state.sharedData.skills}
+            resumeBasicInfo={this.state.resumeData.basic_info}
+          />
+          <Experience
+            resumeExperience={this.state.resumeData.experience}
+            resumeBasicInfo={this.state.resumeData.basic_info}
+          />
+          <Footer sharedBasicInfo={this.state.sharedData.basic_info} />
         </div>
-        <About
-          resumeBasicInfo={this.state.resumeData.basic_info}
-          sharedBasicInfo={this.state.sharedData.basic_info}
-        />
-        <Projects
-          resumeProjects={this.state.resumeData.projects}
-          resumeBasicInfo={this.state.resumeData.basic_info}
-        />
-        <Skills
-          sharedSkills={this.state.sharedData.skills}
-          resumeBasicInfo={this.state.resumeData.basic_info}
-        />
-        <Experience
-          resumeExperience={this.state.resumeData.experience}
-          resumeBasicInfo={this.state.resumeData.basic_info}
-        />
-        <Footer sharedBasicInfo={this.state.sharedData.basic_info} />
+      ) : (<p>hello</p>)}
       </div>
+      // <div>
+       
+      // </div>
     );
   }
 }
