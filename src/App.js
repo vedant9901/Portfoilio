@@ -57,7 +57,7 @@ class App extends Component {
   loadSharedData = async() =>{
     let response = await fetchSharedData(firestoreConnection)
     setTimeout(()=>{
-      this.setState({ sharedData: response });
+      this.setState({ sharedData: response, hasData: true });
       if(this.state.hasData){
         this.loadResumeFromPath()
         this.applyPickedLanguage(
@@ -95,7 +95,7 @@ class App extends Component {
           />
           <Footer sharedBasicInfo={this.state.sharedData.basic_info} />
         </div>
-      ) : (<p>hello</p>)}
+      ) : (<div className="water">hello</div className="water">)}
       </div>
       // <div>
        
