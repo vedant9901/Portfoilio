@@ -24,7 +24,7 @@ class Footer extends Component {
               <small>
                 Copyright &copy;{" "}
                 {this.props.sharedBasicInfo
-                  ? this.props.sharedBasicInfo.name
+                  ? this.props.sharedBasicInfo.name 
                   : "???"}
               </small>
             </div>

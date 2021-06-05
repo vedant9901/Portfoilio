@@ -1,6 +1,3 @@
-/* eslint-disable no-plusplus */
-import axios from 'axios';
-
 /**
  * @param {*} request - No request is used
  */

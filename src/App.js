@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import $, { hasData } from "jquery";
 import "./App.scss";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -58,8 +57,7 @@ class App extends Component {
   loadSharedData = async() =>{
     let response = await fetchSharedData(firestoreConnection)
     setTimeout(()=>{
-      this.setState({ sharedData: response, 
-                      hasData: true });
+      this.setState({ sharedData: response });
       if(this.state.hasData){
         this.loadResumeFromPath()
         this.applyPickedLanguage(
@@ -77,49 +75,16 @@ class App extends Component {
       <div>
       {hasData ? (
         <div>
-           <Header sharedData={this.state.sharedData['basic_info']} />
-          <div className="col-md-12 mx-auto text-center language">
-            <div
-              onClick={() =>
-                this.applyPickedLanguage(
-                  window.$primaryLanguage,
-                  window.$secondaryLanguageIconId
-                )
-              }
-              style={{ display: "inline" }}
-            >
-              <span
-                className="iconify language-icon mr-5"
-                data-icon="twemoji-flag-for-flag-united-india"
-                data-inline="false"
-                id={window.$primaryLanguageIconId}
-              ></span>
-            </div>
-            <div
-              onClick={() =>
-                this.applyPickedLanguage(
-                  window.$secondaryLanguage,
-                  window.$primaryLanguageIconId
-                )
-              }
-              style={{ display: "inline" }}
-            >
-              <span
-                className="iconify language-icon"
-                data-icon="twemoji-flag-for-flag-india"
-                data-inline="false"
-                id={window.$secondaryLanguageIconId}
-              ></span>
-            </div>
-          </div>
+          <Header sharedData={this.state.sharedData['basic_info']} />
+          
           <About
             resumeBasicInfo={this.state.resumeData.basic_info}
             sharedBasicInfo={this.state.sharedData.basic_info}
           />
-          <Projects
+          {/* <Projects
             resumeProjects={this.state.resumeData.projects}
             resumeBasicInfo={this.state.resumeData.basic_info}
-          />
+          /> */}
           <Skills
             sharedSkills={this.state.sharedData.skills}
             resumeBasicInfo={this.state.resumeData.basic_info}
