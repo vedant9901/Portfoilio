@@ -29,7 +29,6 @@ export function fetchSharedData(firestoreConnection) {
          response = doc.data()
         })
         resolve(response)
-        console.log(response)
       })
    }
    catch(e){console.log(e)}

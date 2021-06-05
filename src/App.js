@@ -4,11 +4,10 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import About from "./components/About";
 import Experience from "./components/Experience";
-import Projects from "./components/Projects";
+// import Projects from "./components/Projects";
 import Skills from "./components/Skills";
 import {firestoreConnection} from './firebase';
 import { fetchResumeData, fetchSharedData } from './actions/APIs';
-
 
 class App extends Component {
 
@@ -20,34 +19,35 @@ class App extends Component {
     };
 
   componentDidMount() {
+    //this.postResumeData(firestoreConnection);
+
     this.loadSharedData(); 
   }
 
-  applyPickedLanguage(pickedLanguage, oppositeLangIconId) {
-    this.swapCurrentlyActiveLanguage(oppositeLangIconId);
-    document.documentElement.lang = pickedLanguage;
-    var resumePath =
-      document.documentElement.lang === window.$primaryLanguage
-        ? `res_primaryLanguage.json`
-        : `res_secondaryLanguage.json`;
-    this.loadResumeFromPath(resumePath);
-  }
+  // applyPickedLanguage(pickedLanguage, oppositeLangIconId) {
+  //   this.swapCurrentlyActiveLanguage(oppositeLangIconId);
+  //   document.documentElement.lang = pickedLanguage;
+  //   var resumePath =
+  //     document.documentElement.lang === window.$primaryLanguage
+  //       ? `res_primaryLanguage.json`
+  //       : `res_secondaryLanguage.json`;
+  //   this.loadResumeFromPath(resumePath);
+  // }
 
-  swapCurrentlyActiveLanguage(oppositeLangIconId) {
-    var pickedLangIconId =
-      oppositeLangIconId === window.$primaryLanguageIconId
-        ? window.$secondaryLanguageIconId
-        : window.$primaryLanguageIconId;
-    document
-      .getElementById(oppositeLangIconId)
-      .removeAttribute("filter", "brightness(40%)");
-    document
-      .getElementById(pickedLangIconId)
-      .setAttribute("filter", "brightness(40%)");
-  }
+  // swapCurrentlyActiveLanguage(oppositeLangIconId) {
+  //   var pickedLangIconId =
+  //     oppositeLangIconId === window.$primaryLanguageIconId
+  //       ? window.$secondaryLanguageIconId
+  //       : window.$primaryLanguageIconId;
+  //   document
+  //     .getElementById(oppositeLangIconId)
+  //     .removeAttribute("filter", "brightness(40%)");
+  //   document
+  //     .getElementById(pickedLangIconId)
+  //     .setAttribute("filter", "brightness(40%)");
+  // }
 
   loadResumeFromPath = async ()=> {
-   
     let response = await fetchResumeData(firestoreConnection)
     setTimeout(()=>{
       this.setState({ resumeData: response });
@@ -57,13 +57,14 @@ class App extends Component {
   loadSharedData = async() =>{
     let response = await fetchSharedData(firestoreConnection)
     setTimeout(()=>{
-      this.setState({ sharedData: response, hasData: true });
+      this.setState({ sharedData: response,
+                       hasData: true });
       if(this.state.hasData){
         this.loadResumeFromPath()
-        this.applyPickedLanguage(
-          window.$primaryLanguage,
-          window.$secondaryLanguageIconId
-        );
+        // this.applyPickedLanguage(
+        //   window.$primaryLanguage,
+        //   window.$secondaryLanguageIconId
+        // );
       }
     },1000)
     // this.loadResumeFromPath()
@@ -72,7 +73,7 @@ class App extends Component {
   render() {
     let hasData = this.state.hasData
     return (
-      <div>
+      <div className="main-div">
       {hasData ? (
         <div>
           <Header sharedData={this.state.sharedData['basic_info']} />
@@ -95,7 +96,11 @@ class App extends Component {
           />
           <Footer sharedBasicInfo={this.state.sharedData.basic_info} />
         </div>
-      ) : (<div className="water">hello</div className="water">)}
+      ) : (
+       <div className="loader">
+          <div className="loader-24"></div>
+        </div>
+      )}
       </div>
       // <div>
        

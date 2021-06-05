@@ -5,11 +5,6 @@ import Welcome from './welcome.jsx';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Router } from "react-router";
-import {
-    Route,
-    HashRouter,
-    Redirect 
-  } from "react-router-dom";
 import { createBrowserHistory } from "history";
 /* GLOBAL VARIABLES */
 
