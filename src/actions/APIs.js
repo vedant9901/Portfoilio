@@ -28,6 +28,7 @@ export function fetchSharedData(firestoreConnection) {
         snapshot.forEach(function(doc){
          response = doc.data()
         })
+        console.log(response)
         resolve(response)
       })
    }
