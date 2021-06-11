@@ -22,6 +22,7 @@ class Testimonial extends Component {
       nav: false,
       margin: 1,
       autoplay: true,
+      loop: true,
       //navText: ["Prev", "Next"],
       smartSpeed: 1000,
       responsive: {

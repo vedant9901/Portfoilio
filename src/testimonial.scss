@@ -195,15 +195,23 @@
 
 .pn_testimonial_box {
   font-weight: 500;
-  padding: 3rem;
-  margin: 3rem;
+  /* padding: 3rem; */
+  /* margin: 3rem; */
   border: 1px solid transparent;
   position: relative;
   transition: 1s;
-  transform: scale(0.9);
+  -webkit-transform: scale(.9);
+  transform: scale(.9);
   background-color: transparent;
   border-radius: 4rem;
-  font-size: 13px;
+  font-size: 15px;
+  margin: 10% 0%;
+  padding: 5% 1%;
+}
+
+.owl-carousel .owl-item img{
+  border-radius: 50%;
+    object-fit: cover;
 }
 
 .pn_testimonial_box:hover {
